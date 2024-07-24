@@ -31,7 +31,7 @@ const PaymentForm = () => {
         if (addLogResponse.status === 0) {
           console.log(`${BASE_URL}/addconfirmationlog:`, addLogResponse);
 
-          const processCardResponse = await processCard(sessionId, orderId); // Added processCard call
+          const processCardResponse = await processCard(sessionId, orderId);
           if (processCardResponse.status === 0) {
             console.log(`${BASE_URL}/processcard:`, processCardResponse);
 

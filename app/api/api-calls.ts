@@ -28,7 +28,30 @@ export async function login() {
   }
 }
 
-export async function arrivalBooking( sessionId: string) {
+export async function getSchedule(sessionId: string) {
+  const res = {
+    airportid: "SIA",
+    direction: "A",
+    traveldate: "20240803",
+  };
+
+  const body = {
+    username: "esite3@viponline",
+    sessionid: sessionId,
+    failstatus: 0,
+    request: res,
+  };
+
+  try {
+    const response = await axios.post(`${BASE_URL}/getschedule`, body);
+    console.log(response.data);
+    return response.data;
+  } catch (error) {
+    console.error(error);
+  }
+}
+
+export async function reserveCartItem( sessionId: string) {
   const data = {
     cartitemid: 0,
     productid: "ARRIVALONLY",
@@ -55,32 +78,6 @@ export async function arrivalBooking( sessionId: string) {
 
   try {
     const response = await axios.post(`${BASE_URL}/reservecartitem`, body);
-    console.log(response.data);
-    // if (response.status === 0) {
-    //     dispatch(setCartItemId(response.data.cartitemid));
-    // }
-    return response.data;
-  } catch (error) {
-    console.error(error);
-  }
-}
-
-export async function getSchedule(sessionId: string) {
-  const res = {
-    airportid: "SIA",
-    direction: "A",
-    traveldate: "20240803",
-  };
-
-  const body = {
-    username: "esite3@viponline",
-    sessionid: sessionId,
-    failstatus: 0,
-    request: res,
-  };
-
-  try {
-    const response = await axios.post(`${BASE_URL}/getschedule`, body);
     console.log(response.data);
     return response.data;
   } catch (error) {

@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../store';
-import { getSchedule, arrivalBooking } from '@/api/api-calls';
+import { getSchedule, reserveCartItem } from '@/api/api-calls';
 import Loading from './Loading';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
@@ -52,7 +52,7 @@ const BookingForm = () => {
 
     try {
       setLoadingData(true);
-      const response = await arrivalBooking(sessionId);
+      const response = await reserveCartItem(sessionId);
 
       if (response.status === 0) {
         console.log(`${BASE_URL}reservecartitem:`, response);
