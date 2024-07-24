@@ -32,7 +32,7 @@ export async function getSchedule(sessionId: string) {
   const res = {
     airportid: "SIA",
     direction: "A",
-    traveldate: "20240803",
+    traveldate: "20240804",
   };
 
   const body = {
@@ -65,7 +65,7 @@ export async function reserveCartItem( sessionId: string) {
   const res = {
     ...data,
     productid: "ARRIVALONLY",
-    arrivalscheduleid: 458428,
+    arrivalscheduleid: 515150,
     departurescheduleid: 0,
   };
 
@@ -159,7 +159,7 @@ export async function addConfirmationLog(
           referencenumber: "",
           groupid: "NA",
           groupbooking: "N",
-          arrivalscheduleid: 458428,
+          arrivalscheduleid: 515150,
           departurescheduleid: 0,
           adulttickets: 1,
           childtickets: 0,
@@ -278,7 +278,7 @@ export async function confirmCart(sessionId: string, cartitemId: number) {
             referencenumber: "",
             groupid: "NA",
             groupbooking: "N",
-            arrivalscheduleid: 450187,
+            arrivalscheduleid: 515150,
             departurescheduleid: 0,
             adulttickets: 1,
             childtickets: 0,
