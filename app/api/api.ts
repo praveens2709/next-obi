@@ -1,0 +1,1 @@
+export const BASE_URL = 'https://nigeriadev.reliablesoftjm.com/VIPERWS/';
