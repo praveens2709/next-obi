@@ -12,8 +12,8 @@ const PersonalDetailsForm = () => {
   const [error, setError] = useState('');
   const [loadingData, setLoadingData] = useState(false);
   const router = useRouter();
-  const sessionId = useSelector((state: RootState) => state.session.sessionId);
-  const cartItemId = useSelector((state: RootState) => state.cart.cartItemId);
+  const sessionId = useSelector((state: RootState) => state.app.sessionId);
+  const cartItemId = useSelector((state: RootState) => state.app.cartItemId);
 
   const handleSubmit = async () => {
     if (!sessionId) {

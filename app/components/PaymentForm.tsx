@@ -1,18 +1,20 @@
 "use client";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { RootState } from "../store";
 import Loading from "./Loading";
 import { addConfirmationLog, confirmCart, getOrderId, processCard } from "@/api/api-calls";
 import { BASE_URL } from "@/api/api";
+// import { setOrderId } from "@/store/appSlice";
 
 const PaymentForm = () => {
   const [loadingData, setLoadingData] = useState(false);
-  const router = useRouter();
-  const sessionId = useSelector((state: RootState) => state.session.sessionId);
-  const cartItemId = useSelector((state: RootState) => state.cart.cartItemId);
   const [paymentError, setPaymentError] = useState("");
+  const router = useRouter();
+  const dispatch = useDispatch();
+  const sessionId = useSelector((state: RootState) => state.app.sessionId);
+  const cartItemId = useSelector((state: RootState) => state.app.cartItemId);
 
   const handlePayment = async () => {
     if (!sessionId) {
@@ -26,6 +28,8 @@ const PaymentForm = () => {
       if (orderIdResponse.status === 0) {
         console.log(`${BASE_URL}/getorderid:`, orderIdResponse);
         const orderId = orderIdResponse.data.orderid;
+
+        // dispatch(setOrderId(orderId));
 
         const addLogResponse = await addConfirmationLog(sessionId, cartItemId, orderId);
         if (addLogResponse.status === 0) {

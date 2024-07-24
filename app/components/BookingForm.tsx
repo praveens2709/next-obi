@@ -9,7 +9,7 @@ import Loading from './Loading';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import { BASE_URL } from '@/api/api';
-import { setCartItemId } from '@/store/cartSlice';
+import { setCartItemId } from '@/store/appSlice';
 
 const BookingForm = () => {
   const dispatch = useDispatch();
@@ -17,7 +17,7 @@ const BookingForm = () => {
   const [error, setError] = useState('');
   const [loadingData, setLoadingData] = useState(false);
   const router = useRouter();
-  const sessionId = useSelector((state: RootState) => state.session.sessionId);
+  const sessionId = useSelector((state: RootState) => state.app.sessionId);
 
   const handleDateChange = async (date: Date | null) => {
     setSelectedDate(date);

@@ -4,7 +4,7 @@ import { useState } from "react";
 import axios from "axios";
 import { useRouter } from "next/navigation";
 import { useDispatch } from "react-redux";
-import { setSessionId } from "../store/sessionSlice";
+import { setSessionId } from "../store/appSlice";
 import Loading from "./Loading";
 import { login } from "@/api/api-calls";
 import { BASE_URL } from "@/api/api";
