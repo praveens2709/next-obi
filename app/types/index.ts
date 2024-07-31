@@ -21,4 +21,3 @@ export interface PaymentResponse {
     cartItemId: Number,
     error: boolean,
   }
-  

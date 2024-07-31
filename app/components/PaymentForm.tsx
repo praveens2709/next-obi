@@ -1,15 +1,15 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useFormik } from "formik";
-import * as Yup from "yup";
-import { RootState } from "@/store";
+import { AppDispatch, RootState } from "@/store";
 import { processCreditCardPayment } from "@/utils/fac";
 import { confirmCart } from "@/api/api-calls";
 import Loading from "./Loading";
 import { BASE_URL } from "@/utils/commonConstants";
+import { fetchPaymentGateway } from "@/store/paymentSlice";
 
 const PaymentForm = () => {
   const router = useRouter();
@@ -18,6 +18,14 @@ const PaymentForm = () => {
   const getSessionId = useSelector((state: RootState) => state.app.sessionId);
   const getCartItemId = useSelector((state: RootState) => state.app.cartItemId);
   const [submitOnClickDisable, setSubmitOnClickDisable] = useState(false);
+  const dispatch = useDispatch<AppDispatch>();
+  const sessionId = useSelector((state: RootState) => state.app.sessionId);
+  
+  useEffect(() => {
+    if (sessionId) {
+      dispatch(fetchPaymentGateway(sessionId));
+    }
+  }, [sessionId, dispatch]);
 
   const formik = useFormik({
     initialValues: {

@@ -3,9 +3,11 @@ import { persistStore, persistReducer } from 'redux-persist';
 import storage from 'redux-persist/lib/storage';
 import { combineReducers } from 'redux';
 import appSlice from './appSlice';
+import paymentSlice from './paymentSlice';
 
 const rootReducer = combineReducers({
   app: appSlice,
+  paymentGatewayRedux: paymentSlice,
 });
 
 const persistConfig = {

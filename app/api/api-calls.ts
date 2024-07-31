@@ -3,6 +3,7 @@ import axios from "axios";
 import { BASE_URL, createRequestBody } from '../utils/commonConstants';
 
 export async function login() {
+  "use server"
   const body = {
     failstatus: 0,
     request: {
@@ -323,7 +324,17 @@ export async function confirmCart(sessionId: string, cartitemId: number) {
   }
 }
 
-export async function getPaymentGateway(sessionId:string) {
+export interface PaymentGatewayResponse {
+  request: {
+    sessionid: string;
+    request: any;
+    username: string;
+    failstatus: number;
+  };
+  response: any;
+}
+
+export async function getPaymentGateway(sessionId: string): Promise<PaymentGatewayResponse | undefined> {
   const body = createRequestBody(sessionId, {});
   console.log("Request for getPaymentGateway:", body);
 
@@ -332,9 +343,10 @@ export async function getPaymentGateway(sessionId:string) {
     console.log("Response from getPaymentGateway:", response.data);
     return {
       request: body,
-      response: response.data
+      response: response.data,
     };
   } catch (error) {
     console.error("Error during getPaymentGateway:", error);
+    return undefined;
   }
 }

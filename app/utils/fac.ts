@@ -2,7 +2,7 @@
 
 import { store } from "@/store";
 import { PaymentResponse, ResolveData, HtmlData } from "../types";
-import { addConfirmationLog, getOrderId, getPaymentGateway, processCard } from "../api/api-calls";
+import { addConfirmationLog, getOrderId, processCard } from "../api/api-calls";
 import { setOrderId } from "@/store/appSlice";
 import { BASE_URL, IS_PAYMENT_MODAL, PRIVATE_AESKEY } from "./commonConstants";
 import { encryptCardDetails } from "./commonFunctions";
@@ -10,13 +10,15 @@ import { encryptCardDetails } from "./commonFunctions";
 export let facProcess3DSPayment: any;
 
 if (IS_PAYMENT_MODAL === "iframe" as any) {
-  facProcess3DSPayment = async (HtmlData: any, sessionId: string) => {
+  facProcess3DSPayment = async (HtmlData: any) => {
     return new Promise((resolve, reject) => {
-      const paymentGatewayDetail = getPaymentGateway(sessionId);
+      const state = store.getState();
+      const paymentGatewayDetail = state?.paymentGatewayRedux.redirecturl2;
 
       console.log(`${BASE_URL}getpaymentgateway :`, paymentGatewayDetail)
 
       let redirecturl2 = paymentGatewayDetail;
+      console.log(redirecturl2)
       //  https://nigeria.reliablesoftjm.com/VIPERWS/powertranzcallback
 
       let width = 900;
@@ -106,10 +108,12 @@ if (IS_PAYMENT_MODAL === "iframe" as any) {
     });
   };
 } else {
-  facProcess3DSPayment = async ( HtmlData: HtmlData, sessionId: string ): Promise<ResolveData> => {
+  facProcess3DSPayment = async ( HtmlData: HtmlData): Promise<ResolveData> => {
     return new Promise((resolve, reject) => {
-      const paymentGatewayDetail = getPaymentGateway(sessionId);
-      const redirecturl2 = paymentGatewayDetail;
+      const state = store.getState();
+      const paymentGatewayDetail = state.paymentGatewayRedux.redirecturl2;
+  
+      let redirecturl2 = paymentGatewayDetail;
 
       const modal = document.createElement("div");
       modal.classList.add("modal", "fade");

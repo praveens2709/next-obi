@@ -16,10 +16,11 @@ export const COMMON_BODY = {
     failstatus: 0,
 };
 
-export function createRequestBody(sessionId:string, requestData:any) {
+export function createRequestBody(sessionId: string, requestData: any) {
+    console.log("Creating request body with sessionId:", sessionId, "and requestData:", requestData);
     return {
-      ...COMMON_BODY,
-      sessionid: sessionId,
-      request: requestData,
+        ...COMMON_BODY,
+        sessionid: sessionId,
+        request: requestData,
     };
 }
