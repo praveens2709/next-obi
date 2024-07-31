@@ -135,7 +135,7 @@ export async function getOrderId(sessionId: string) {
 
 export async function addConfirmationLog(dataAddconfirmation: any) {
   const sessionId = dataAddconfirmation.sessionid;
-  const cartitemId = dataAddconfirmation.cardId;
+  const cartitemId = dataAddconfirmation.cartItemId;
   const orderIdData = dataAddconfirmation.orderId;
 
   const request = {

@@ -264,7 +264,7 @@ export const processCreditCardPayment = async (paymentData: any, getSessionData:
 
       const dataAddconfirmation = {
         sessionid: getSessionData,
-        cardId: getcartitemIdData,
+        cartItemId: getcartitemIdData,
         orderId: orderIdDataVar,
       }
 
