@@ -1,30 +1,29 @@
-"use server";
+"use server"
 import axios from "axios";
-import { BASE_URL } from './api';
+import { BASE_URL, createRequestBody } from '../utils/commonConstants';
 
 export async function login() {
-  const CUSTOMER_LOGIN = {
-    username: "esite3@viponline",
-    password: "5f4dcc3b5aa765d61d8327deb882cf99",
-  };
-  const VIPER_CONST = {
-    alwaysOnUsername: "esite3@viponline",
-    alwaysOnSessionid: "00009223581026309436128527",
-  };
-
   const body = {
-    username: VIPER_CONST.alwaysOnUsername,
-    sessionid: VIPER_CONST.alwaysOnSessionid,
-    request: CUSTOMER_LOGIN,
+    failstatus: 0,
+    request: {
+      username: 'esite3@viponline',
+      password: '5f4dcc3b5aa765d61d8327deb882cf99',
+      marketid: 'JAM',
+      languageid: 'en'
+    }
   };
+  
+  console.log("Request for login:", body);
 
   try {
     const response = await axios.post(`${BASE_URL}/login`, body);
-    console.log("Login data", response.data);
-
-    return response.data;
+    console.log("Response from login:", response.data);
+    return {
+      request: body,
+      response: response.data
+    };
   } catch (error) {
-    console.error(error);
+    console.error("Error during login:", error);
   }
 }
 
@@ -32,26 +31,25 @@ export async function getSchedule(sessionId: string) {
   const res = {
     airportid: "SIA",
     direction: "A",
-    traveldate: "20240804",
+    traveldate: "20240809",
   };
 
-  const body = {
-    username: "esite3@viponline",
-    sessionid: sessionId,
-    failstatus: 0,
-    request: res,
-  };
+  const body = createRequestBody(sessionId, res);
+  console.log("Request for getSchedule:", body);
 
   try {
     const response = await axios.post(`${BASE_URL}/getschedule`, body);
-    console.log(response.data);
-    return response.data;
+    console.log("Response from getSchedule:", response.data);
+    return {
+      request: body,
+      response: response.data
+    };
   } catch (error) {
-    console.error(error);
+    console.error("Error during getSchedule:", error);
   }
 }
 
-export async function reserveCartItem( sessionId: string) {
+export async function reserveCartItem(sessionId: string) {
   const data = {
     cartitemid: 0,
     productid: "ARRIVALONLY",
@@ -65,23 +63,22 @@ export async function reserveCartItem( sessionId: string) {
   const res = {
     ...data,
     productid: "ARRIVALONLY",
-    arrivalscheduleid: 515150,
+    arrivalscheduleid: 454245,
     departurescheduleid: 0,
   };
 
-  const body = {
-    username: "esite3@viponline",
-    sessionid: sessionId,
-    failstatus: 0,
-    request: res,
-  };
+  const body = createRequestBody(sessionId, res);
+  console.log("Request for reserveCartItem:", body);
 
   try {
     const response = await axios.post(`${BASE_URL}/reservecartitem`, body);
-    console.log(response.data);
-    return response.data;
+    console.log("Response from reserveCartItem:", response.data);
+    return {
+      request: body,
+      response: response.data
+    };
   } catch (error) {
-    console.error(error);
+    console.error("Error during reserveCartItem:", error);
   }
 }
 
@@ -99,19 +96,18 @@ export async function setContact(sessionId: string, cartitemId: number) {
     contact: data,
   };
 
-  const body = {
-    username: "esite3@viponline",
-    sessionid: sessionId,
-    failstatus: 0,
-    request: res,
-  };
+  const body = createRequestBody(sessionId, res);
+  console.log("Request for setContact:", body);
 
   try {
     const response = await axios.post(`${BASE_URL}/setcontact`, body);
-    console.log(response.data);
-    return response.data;
+    console.log("Response from setContact:", response.data);
+    return {
+      request: body,
+      response: response.data
+    };
   } catch (error) {
-    console.error(error);
+    console.error("Error during setContact:", error);
   }
 }
 
@@ -121,226 +117,224 @@ export async function getOrderId(sessionId: string) {
     source: "OBI-MAIN",
   };
 
-  const body = {
-    username: "esite3@viponline",
-    sessionid: sessionId,
-    failstatus: 0,
-    request: res,
-  };
+  const body = createRequestBody(sessionId, res);
+  console.log("Request for getOrderId:", body);
 
   try {
     const response = await axios.post(`${BASE_URL}/getorderid`, body);
-    console.log(response.data);
-    return response.data;
+    console.log("Response from getOrderId:", response.data);
+    return {
+      request: body,
+      response: response.data
+    };
   } catch (error) {
-    console.error(error);
+    console.error("Error during getOrderId:", error);
   }
 }
 
-export async function addConfirmationLog(
-  sessionId: string,
-  cartitemId: number,
-  orderIdData: string
-) {
-  const body = {
-    username: "esite3@viponline",
-    sessionid: sessionId,
-    failstatus: 0,
-    request: {
-      distributorid: "",
-      sendconfirmation: {
-        sendto: "praveen1892293@gmail.com",
-        copyto: "",
-      },
-      cart: [
-        {
-          cartitemid: cartitemId,
-          productid: "ARRIVALONLY",
-          referencenumber: "",
-          groupid: "NA",
-          groupbooking: "N",
-          arrivalscheduleid: 515150,
-          departurescheduleid: 0,
-          adulttickets: 1,
-          childtickets: 0,
-          infanttickets: 0,
-          optional: {
-            occasioncomment: "",
-            paddlename: "Praveen Sharma",
-          },
-          passengers: [
-            {
-              passengertype: "ADULT",
-              title: "MR",
-              firstname: "Praveen",
-              lastname: "Sharma",
-              email: "praveen1892293@gmail.com",
-              phone: "06376135858",
-              dob: "",
-            },
-          ],
-          primarycontact: {
+export async function addConfirmationLog(dataAddconfirmation: any) {
+  const sessionId = dataAddconfirmation.sessionid;
+  const cartitemId = dataAddconfirmation.cardId;
+  const orderIdData = dataAddconfirmation.orderId;
+
+  const request = {
+    distributorid: "",
+    sendconfirmation: {
+      sendto: "praveen1892293@gmail.com",
+      copyto: "",
+    },
+    cart: [
+      {
+        cartitemid: cartitemId,
+        productid: "ARRIVALONLY",
+        referencenumber: "",
+        groupid: "NA",
+        groupbooking: "N",
+        arrivalscheduleid: 454245,
+        departurescheduleid: 0,
+        adulttickets: 1,
+        childtickets: 0,
+        infanttickets: 0,
+        optional: {
+          occasioncomment: "",
+          paddlename: "Praveen Sharma",
+        },
+        passengers: [
+          {
+            passengertype: "ADULT",
             title: "MR",
             firstname: "Praveen",
             lastname: "Sharma",
             email: "praveen1892293@gmail.com",
             phone: "06376135858",
+            dob: "",
           },
-          secondarycontact: {
-            title: "MR",
-            firstname: "",
-            lastname: "",
-            email: "",
-            phone: "",
-          },
-          amount: 50,
-        },
-      ],
-      payment: {
-        paymenttype: "GUESTCARD",
-        charged: "Y",
-        creditcard: {
-          cardtype: "VISA",
-          cardnumber: "1111",
-          cardholder: "Praveen Sharma",
+        ],
+        primarycontact: {
+          title: "MR",
+          firstname: "Praveen",
+          lastname: "Sharma",
           email: "praveen1892293@gmail.com",
-          currency: "USD",
-          amount: 50,
-          authorizationnumber: 123456,
+          phone: "06376135858",
         },
+        secondarycontact: {
+          title: "MR",
+          firstname: "",
+          lastname: "",
+          email: "",
+          phone: "",
+        },
+        amount: 50,
       },
-      affiliateid: "!",
-      subaffiliateid: 0,
-      httpreferrer: "",
-      referrerid: "",
-      orderid: orderIdData,
+    ],
+    payment: {
+      paymenttype: "GUESTCARD",
+      charged: "Y",
+      creditcard: {
+        cardtype: "VISA",
+        cardnumber: "1111",
+        cardholder: "Praveen Sharma",
+        email: "praveen1892293@gmail.com",
+        currency: "USD",
+        amount: 50,
+        authorizationnumber: 123456,
+      },
     },
+    affiliateid: "!",
+    subaffiliateid: 0,
+    httpreferrer: "",
+    referrerid: "",
+    orderid: orderIdData,
   };
 
-  console.log("response", body);
+  const body = createRequestBody(sessionId, request);
+  console.log("Request for addConfirmationLog:", body);
+
   try {
     const response = await axios.post(`${BASE_URL}/addconfirmationlog`, body);
-    console.log(response.data);
-    return response.data;
+    console.log("Response from addConfirmationLog:", response.data);
+    return {
+      request: body,
+      response: response.data
+    };
   } catch (error) {
-    console.error(error);
+    console.error("Error during addConfirmationLog:", error);
   }
 }
 
-export async function processCard(sessionId: string, orderIdData: string) {
-  const body = {
-    username: "esite3@viponline",
-    sessionid: sessionId,
-    failstatus: 0,
-    request: {
-      orderid: orderIdData,
-      actiontype: "CHARGECARD",
-      creditcard: {
-        cardtype: "VISA",
-        cardnumber: "szJnJIvD0qin98Sdv6UBFutM/+Vat5yp3nNr8pL6XX0=",
-        cardholder: "GA3PiAz65R+3K1o1dyxnhA==",
-        expirydate: "UbPjQqDmoIDz3hG9SMrINg==",
-        cvv: "r8YBGktz3r6q2vKKI8FAxA==",
-        amount: 50,
-        iv: "LOnnWpsjwGgro6koOObMpQ==",
-      },
-    },
-  };
+export async function processCard(processCardRequest: any, sessionId: string) {
+  const body = createRequestBody(sessionId, processCardRequest);
+  console.log("Request for processCard:", body);
 
-  console.log("response", body);
   try {
-    const response = await axios.post(
-      "https://nigeriadev.reliablesoftjm.com/VIPERWS/processcard",
-      body
-    );
-    console.log(response.data);
-    return response.data;
+    const response = await axios.post(`${BASE_URL}/processcard`, body);
+    console.log("Response from processCard:", response.data);
+    return {
+      request: body,
+      response: response.data
+    };
   } catch (error) {
-    console.error(error);
+    console.error("Error during processCard:", error);
   }
 }
 
 export async function confirmCart(sessionId: string, cartitemId: number) {
-    const body = {
-      username: "esite3@viponline",
-      sessionid: sessionId,
-      failstatus: 0,
-      request: {
-        distributorid: "",
-        sendconfirmation: {
-          sendto: "praveen1892293@gmail.com",
-          copyto: "",
+  const request = {
+    distributorid: "",
+    sendconfirmation: {
+      sendto: "praveen1892293@gmail.com",
+      copyto: "",
+    },
+    cart: [
+      {
+        cartitemid: cartitemId,
+        productid: "ARRIVALONLY",
+        referencenumber: "",
+        groupid: "NA",
+        groupbooking: "N",
+        arrivalscheduleid: 454245,
+        departurescheduleid: 0,
+        adulttickets: 1,
+        childtickets: 0,
+        infanttickets: 0,
+        optional: {
+          occasioncomment: "",
+          paddlename: "Praveen Sharma",
         },
-        cart: [
+        passengers: [
           {
-            cartitemid: cartitemId,
-            productid: "ARRIVALONLY",
-            referencenumber: "",
-            groupid: "NA",
-            groupbooking: "N",
-            arrivalscheduleid: 515150,
-            departurescheduleid: 0,
-            adulttickets: 1,
-            childtickets: 0,
-            infanttickets: 0,
-            optional: {
-              occasioncomment: "",
-              paddlename: "Praveen Sharma",
-            },
-            passengers: [
-              {
-                passengertype: "ADULT",
-                title: "MR",
-                firstname: "Praveen",
-                lastname: "Sharma",
-                email: "praveen1892293@gmail.com",
-                phone: "06376135858",
-                dob: "",
-              },
-            ],
-            primarycontact: {
-              title: "MR",
-              firstname: "Praveen",
-              lastname: "Sharma",
-              email: "praveen1892293@gmail.com",
-              phone: "06376135858",
-            },
-            secondarycontact: {
-              title: "MR",
-              firstname: "",
-              lastname: "",
-              email: "",
-              phone: "",
-            },
-            amount: 50,
+            passengertype: "ADULT",
+            title: "MR",
+            firstname: "Praveen",
+            lastname: "Sharma",
+            email: "praveen1892293@gmail.com",
+            phone: "06376135858",
+            dob: "",
           },
         ],
-        payment: {
-          paymenttype: "GUESTCARD",
-          charged: "Y",
-          creditcard: {
-            cardtype: "VISA",
-            cardnumber: "1111",
-            cardholder: "Praveen Sharma",
-            email: "praveen1892293@gmail.com",
-            currency: "USD",
-            amount: 50,
-            authorizationnumber: "123456",
-          },
+        primarycontact: {
+          title: "MR",
+          firstname: "Praveen",
+          lastname: "Sharma",
+          email: "praveen1892293@gmail.com",
+          phone: "06376135858",
         },
-        affiliateid: "!",
-        subaffiliateid: 0,
-        httpreferrer: "",
-        referrerid: "",
+        secondarycontact: {
+          title: "MR",
+          firstname: "",
+          lastname: "",
+          email: "",
+          phone: "",
+        },
+        amount: 50,
       },
+    ],
+    payment: {
+      paymenttype: "GUESTCARD",
+      charged: "Y",
+      creditcard: {
+        cardtype: "VISA",
+        cardnumber: "1111",
+        cardholder: "Praveen Sharma",
+        email: "praveen1892293@gmail.com",
+        currency: "USD",
+        amount: 50,
+        authorizationnumber: "123456",
+      },
+    },
+    affiliateid: "!",
+    subaffiliateid: 0,
+    httpreferrer: "",
+    referrerid: "",
+  };
+
+  const body = createRequestBody(sessionId, request);
+  console.log("Request for confirmCart:", body);
+
+  try {
+    const response = await axios.post(`${BASE_URL}/confirmcart`, body);
+    console.log("Response from confirmCart:", response.data);
+    return {
+      request: body,
+      response: response.data
     };
-  
-    console.log("praveen", body);
-    try {
-      const response = await axios.post(`${BASE_URL}/confirmcart`, body);
-      console.log(response.data);
-      return response.data;
-    } catch (error) {
-      console.error(error);
-    }
+  } catch (error) {
+    console.error("Error during confirmCart:", error);
   }
+}
+
+export async function getPaymentGateway(sessionId:string) {
+  const body = createRequestBody(sessionId, {});
+  console.log("Request for getPaymentGateway:", body);
+
+  try {
+    const response = await axios.post(`${BASE_URL}/getpaymentgateway`, body);
+    console.log("Response from getPaymentGateway:", response.data);
+    return {
+      request: body,
+      response: response.data
+    };
+  } catch (error) {
+    console.error("Error during getPaymentGateway:", error);
+  }
+}

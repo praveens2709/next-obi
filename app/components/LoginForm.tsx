@@ -7,7 +7,7 @@ import { useDispatch } from "react-redux";
 import { setSessionId } from "../store/appSlice";
 import Loading from "./Loading";
 import { login } from "@/api/api-calls";
-import { BASE_URL } from "@/api/api";
+import { BASE_URL } from "@/utils/commonConstants";
 
 const LoginPage = () => {
   const dispatch = useDispatch();
@@ -18,13 +18,18 @@ const LoginPage = () => {
   const handleChange = async () => {
     try {
       setLoadingData(true);
-      const response = await login();
-      console.log(`${BASE_URL}login:`, response);
+      const result = await login();
 
-      const sessionId = response.data.sessionid;
-      dispatch(setSessionId(sessionId));
-
-      router.push("/home");
+      console.log(`request for ${BASE_URL}/login:`, result?.request);
+      console.log(`response for ${BASE_URL}login:`, result?.response);
+  
+      if (result?.response.status === 0) {
+        const sessionId = result.response.data.sessionid;
+        dispatch(setSessionId(sessionId));
+        router.push("/home");
+      } else {
+        setLoginError("Login failed: No response data");
+      }
     } catch (error) {
       setLoadingData(false);
       if (axios.isAxiosError(error)) {
@@ -38,6 +43,7 @@ const LoginPage = () => {
       setLoadingData(false);
     }
   };
+  
 
   return (
     <div className="container d-flex justify-content-center align-items-center vh-100">
@@ -46,7 +52,8 @@ const LoginPage = () => {
           <Loading isLoading={loadingData} />
         ) : (
           <>
-            <button className="btn btn-secondary px-5 mb-3" onClick={handleChange}>
+            <button className="btn btn-primary rounded-1 px-5 mb-3" onClick={handleChange}
+            style={{ backgroundColor: "#9f004f", border: "none" }}>
               Login
             </button>
             {loginError && <p className="text-danger">{loginError}</p>}

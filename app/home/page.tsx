@@ -4,7 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import axios from "axios";
 import { login } from "@/api/api-calls";
-import { BASE_URL } from "@/api/api";
+import { BASE_URL } from "@/utils/commonConstants";
 import Loading from "@/components/Loading";
 
 const HomePage = () => {
@@ -17,8 +17,9 @@ const HomePage = () => {
     setLoginError(null);
 
     try {
-      const response = await login();
-      console.log(`${BASE_URL}login:`, response);
+      const result = await login();
+      console.log(`request for ${BASE_URL}login:`, result?.request);
+      console.log(`response for ${BASE_URL}login:`, result?.response);
       router.push('/booking');
     } catch (error) {
       if (axios.isAxiosError(error)) {
@@ -36,7 +37,7 @@ const HomePage = () => {
         <Loading isLoading={loadingData} />
       ) : (
         <div className="card p-2 bg-light" style={{ width: '20rem' }}>
-          <button className="btn btn-danger w-100" onClick={handleBookingNavigation} disabled={loadingData}>
+          <button className="btn btn-primary w-100" style={{ backgroundColor: "#9f004f", border: "none" }} onClick={handleBookingNavigation} disabled={loadingData}>
             Book Arrival
           </button>
           <div className="card-body text-center">

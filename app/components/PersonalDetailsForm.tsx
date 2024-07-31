@@ -1,12 +1,12 @@
-"use client";
+'use client';
 
-import { useState } from "react";
-import { useRouter } from "next/navigation";
-import { useSelector } from "react-redux";
-import { RootState } from "../store";
-import { setContact } from "@/api/api-calls";
-import Loading from "./Loading";
-import { BASE_URL } from "@/api/api";
+import { useState } from 'react';
+import { useRouter } from 'next/navigation';
+import { useSelector } from 'react-redux';
+import { RootState } from '../store';
+import { setContact } from '@/api/api-calls';
+import Loading from './Loading';
+import { BASE_URL } from '@/utils/commonConstants';
 
 const PersonalDetailsForm = () => {
   const [error, setError] = useState('');
@@ -21,15 +21,22 @@ const PersonalDetailsForm = () => {
       return;
     }
 
+    if (cartItemId === undefined) {
+      setError('Cart Item ID is missing');
+      return;
+    }
+
     setLoadingData(true);
     try {
-      const response = await setContact(sessionId, cartItemId);
+      const result = await setContact(sessionId, cartItemId);
 
-      if (response.status === 0) {
-        console.log(`${BASE_URL}setcontact:`, response);
+      console.log(`request for ${BASE_URL}/setcontact:`, result?.request);
+
+      if (result?.response.status === 0) {
+        console.log(`response for ${BASE_URL}/setcontact:`, result.response);
         router.push('/preview');
       } else {
-        setError(response?.error || 'Failed to set contact details');
+        setError(result?.response.error || 'Failed to set contact details');
       }
     } catch (error) {
       console.error('Error setting contact details:', error);
@@ -46,13 +53,14 @@ const PersonalDetailsForm = () => {
           <Loading isLoading={loadingData} />
         ) : (
           <>
-            <h1 className="text-secondary mb-4">Registration Details</h1>
+            <h3 className="fw-normal mb-4 text-uppercase">Registration Details</h3>
             <button 
               type="button" 
-              className="btn btn-secondary px-5 mb-3" 
+              className="btn btn-primary rounded-1 px-5 mb-3 text-uppercase" 
               onClick={handleSubmit}
+              style={{ backgroundColor: "#9f004f", border: "none" }}
             >
-              Next
+              Proceed to checkout
             </button>
             {error && <p className="text-danger">{error}</p>}
           </>

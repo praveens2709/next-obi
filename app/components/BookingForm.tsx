@@ -8,7 +8,7 @@ import { getSchedule, reserveCartItem } from '@/api/api-calls';
 import Loading from './Loading';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
-import { BASE_URL } from '@/api/api';
+import { BASE_URL } from '@/utils/commonConstants';
 import { setCartItemId } from '@/store/appSlice';
 
 const BookingForm = () => {
@@ -30,11 +30,14 @@ const BookingForm = () => {
 
     try {
       setLoadingData(true);
-      const response = await getSchedule(sessionId);
-      if (response.status === 0) {
-        console.log(`${BASE_URL}getschedule:`, response);
+      const result = await getSchedule(sessionId);
+
+      console.log(`request for ${BASE_URL}/getschedule:`, result?.request);
+
+      if (result?.response.status === 0) {
+        console.log(`response for ${BASE_URL}/getschedule:`, result?.response);
       } else {
-        setError(response?.error || 'Failed to fetch schedule');
+        setError(result?.response.error || 'Failed to fetch schedule');
       }
     } catch (error) {
       console.error('Error fetching schedule:', error);
@@ -52,16 +55,22 @@ const BookingForm = () => {
 
     try {
       setLoadingData(true);
-      const response = await reserveCartItem(sessionId);
+      const result = await reserveCartItem(sessionId);
 
-      if (response.status === 0) {
-        console.log(`${BASE_URL}reservecartitem:`, response);
+      console.log(`request for ${BASE_URL}/reservecartitem:`, result?.request);
 
-        const cartItemId = response.data.cartitemid
-        dispatch(setCartItemId(cartItemId))
-        router.push('/personalDetails');
+      if (result?.response.status === 0) {
+        console.log(`response for ${BASE_URL}/reservecartitem:`, result?.response);
+
+        const cartItemId = result.response?.data?.cartitemid;
+        if (cartItemId !== undefined) {
+          dispatch(setCartItemId(cartItemId));
+          router.push('/personalDetails');
+        } else {
+          setError('Cart item ID is missing');
+        }
       } else {
-        setError(response?.error || 'Failed to reserve cart item');
+        setError(result?.response.error || 'Failed to reserve cart item');
       }
     } catch (error) {
       console.error('Error reserving cart item:', error);
@@ -78,7 +87,7 @@ const BookingForm = () => {
           <Loading isLoading={loadingData} />
         ) : (
           <>
-            <h1 className='pb-4 text-secondary'>Booking Form</h1>
+            <h3 className='pb-4 fw-normal text-uppercase'>Booking Form</h3>
             <form onSubmit={(e) => e.preventDefault()} className="mb-3 d-flex flex-column">
               <DatePicker
                 selected={selectedDate}
@@ -87,8 +96,8 @@ const BookingForm = () => {
                 className="form-control mb-2"
                 placeholderText="Select a date"
               />
-              <button type="button" className="btn btn-secondary" onClick={handleSubmit}>
-                Next
+              <button type="button" className="btn btn-primary rounded-1 text-uppercase px-4" onClick={handleSubmit} style={{ backgroundColor: "#9f004f", border: "none" }}>
+                Check Availability
               </button>
             </form>
             {error && <p className="text-danger">{error}</p>}
