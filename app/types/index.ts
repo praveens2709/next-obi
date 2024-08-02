@@ -21,3 +21,13 @@ export interface PaymentResponse {
     cartItemId: Number,
     error: boolean,
   }
+
+  export interface PaymentGatewayResponse {
+    request: {
+      sessionid: string;
+      request: any;
+      username: string;
+      failstatus: number;
+    };
+    response: any;
+  }

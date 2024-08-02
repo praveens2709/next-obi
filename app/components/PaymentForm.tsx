@@ -33,8 +33,8 @@ const PaymentForm = () => {
       email: "test@example.us",
       cardType: "VISA",
       cardNumber: "",
-      cardMonth: "07",
-      cardYear: "24",
+      cardMonth: "08",
+      cardYear: "25",
       cvv: "",
     },
     onSubmit: (values) => {

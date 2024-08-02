@@ -36,7 +36,7 @@ const PersonalDetailsForm = () => {
         console.log(`response for ${BASE_URL}/setcontact:`, result?.response);
         router.push('/preview');
       } else {
-        setError(result?.response.error || 'Failed to set contact details');
+        setError('Failed to set contact details');
       }
     } catch (error) {
       console.error('Error setting contact details:', error);

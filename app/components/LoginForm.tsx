@@ -24,7 +24,7 @@ const LoginPage = () => {
       console.log(`response for ${BASE_URL}login:`, result?.response);
   
       if (result?.response.status === 0) {
-        const sessionId = result.response.data.sessionid;
+        const sessionId = result.response.data?.sessionid;
         dispatch(setSessionId(sessionId));
         router.push("/home");
       } else {

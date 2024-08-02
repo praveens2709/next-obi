@@ -22,8 +22,11 @@ export const fetchPaymentGateway = createAsyncThunk(
     async (sessionId: string, thunkAPI) => {
         try {
             const result = await getPaymentGateway(sessionId);
-            if (result?.response?.data?.redirecturl2) {
-                return { redirecturl2: result.response.data.redirecturl2 };
+            console.log(result)
+            console.log(result?.response)
+            console.log(result?.response?.redirecturl2)
+            if (result?.response?.redirecturl2) {
+                return { redirecturl2: result.response.redirecturl2 };
             } else {
                 return thunkAPI.rejectWithValue('No redirect URL found');
             }

@@ -1,9 +1,9 @@
-"use server"
+"use server";
 import axios from "axios";
 import { BASE_URL, createRequestBody } from '../utils/commonConstants';
+import { PaymentGatewayResponse } from "@/types";
 
 export async function login() {
-  "use server"
   const body = {
     failstatus: 0,
     request: {
@@ -13,7 +13,7 @@ export async function login() {
       languageid: 'en'
     }
   };
-  
+
   console.log("Request for login:", body);
 
   try {
@@ -21,7 +21,22 @@ export async function login() {
     console.log("Response from login:", response.data);
     return {
       request: body,
-      response: response.data
+      response: response.data.status === 0
+        ? {
+            status: response.data.status,
+            statusMessage: response.data.statusMessage,
+            severity: 0,
+            data: {
+              username: "esite3@viponline",
+              sessionid: response.data.data.sessionid,
+              marketid: "JAM",
+              languageid: "en",
+            },
+          }
+        : {
+            status: response.data.status,
+            statusMessage: response.data.statusMessage,
+          }
     };
   } catch (error) {
     console.error("Error during login:", error);
@@ -43,7 +58,13 @@ export async function getSchedule(sessionId: string) {
     console.log("Response from getSchedule:", response.data);
     return {
       request: body,
-      response: response.data
+      response: {
+        username: response.data.username,
+        sessionid: response.data.sessionid,
+        status: response.data.status,
+        statusMessage: response.data.statusMessage,
+        severity: response.data.severity,
+      }
     };
   } catch (error) {
     console.error("Error during getSchedule:", error);
@@ -64,7 +85,7 @@ export async function reserveCartItem(sessionId: string) {
   const res = {
     ...data,
     productid: "ARRIVALONLY",
-    arrivalscheduleid: 447843,
+    arrivalscheduleid: 448200,
     departurescheduleid: 0,
   };
 
@@ -76,7 +97,14 @@ export async function reserveCartItem(sessionId: string) {
     console.log("Response from reserveCartItem:", response.data);
     return {
       request: body,
-      response: response.data
+      response: {
+        username: response.data.username,
+        sessionid: response.data.sessionid,
+        status: response.data.status,
+        statusMessage: response.data.statusMessage,
+        severity: response.data.severity,
+        cartitemid: response.data.data.cartitemid,
+      }
     };
   } catch (error) {
     console.error("Error during reserveCartItem:", error);
@@ -105,7 +133,18 @@ export async function setContact(sessionId: string, cartitemId: number) {
     console.log("Response from setContact:", response.data);
     return {
       request: body,
-      response: response.data
+      response: {
+        username: response.data.username,
+        sessionid: response.data.sessionid,
+        status: response.data.status,
+        statusMessage: response.data.statusMessage,
+        severity: response.data.severity,
+        data: {
+          contact: {
+            cartitemid: response.data.data.contact.cartitemid,
+          }
+        }
+      }
     };
   } catch (error) {
     console.error("Error during setContact:", error);
@@ -126,7 +165,16 @@ export async function getOrderId(sessionId: string) {
     console.log("Response from getOrderId:", response.data);
     return {
       request: body,
-      response: response.data
+      response: {
+        username: response.data.username,
+        sessionid: response.data.sessionid,
+        status: response.data.status,
+        statusMessage: response.data.statusMessage,
+        severity: response.data.severity,
+        data: {
+          orderid: response.data.data.orderid,
+        }
+      }
     };
   } catch (error) {
     console.error("Error during getOrderId:", error);
@@ -151,7 +199,7 @@ export async function addConfirmationLog(dataAddconfirmation: any) {
         referencenumber: "",
         groupid: "NA",
         groupbooking: "N",
-        arrivalscheduleid: 447843,
+        arrivalscheduleid: 448200,
         departurescheduleid: 0,
         adulttickets: 1,
         childtickets: 0,
@@ -216,7 +264,13 @@ export async function addConfirmationLog(dataAddconfirmation: any) {
     console.log("Response from addConfirmationLog:", response.data);
     return {
       request: body,
-      response: response.data
+      response: {
+        username: response.data.username,
+        sessionid: response.data.sessionid,
+        status: response.data.status,
+        statusMessage: response.data.statusMessage,
+        severity: response.data.severity,
+      }
     };
   } catch (error) {
     console.error("Error during addConfirmationLog:", error);
@@ -232,7 +286,14 @@ export async function processCard(processCardRequest: any, sessionId: string) {
     console.log("Response from processCard:", response.data);
     return {
       request: body,
-      response: response.data
+      response: {
+        username: response.data.username,
+        sessionid: response.data.sessionid,
+        status: response.data.status,
+        statusMessage: response.data.statusMessage,
+        severity: response.data.severity,
+        data: response.data.data,
+      }
     };
   } catch (error) {
     console.error("Error during processCard:", error);
@@ -253,7 +314,7 @@ export async function confirmCart(sessionId: string, cartitemId: number) {
         referencenumber: "",
         groupid: "NA",
         groupbooking: "N",
-        arrivalscheduleid: 447843,
+        arrivalscheduleid: 448200,
         departurescheduleid: 0,
         adulttickets: 1,
         childtickets: 0,
@@ -300,13 +361,14 @@ export async function confirmCart(sessionId: string, cartitemId: number) {
         email: "praveen1892293@gmail.com",
         currency: "USD",
         amount: 50,
-        authorizationnumber: "123456",
+        authorizationnumber: 123456,
       },
     },
     affiliateid: "!",
     subaffiliateid: 0,
     httpreferrer: "",
     referrerid: "",
+    orderid: "12574",
   };
 
   const body = createRequestBody(sessionId, request);
@@ -317,21 +379,17 @@ export async function confirmCart(sessionId: string, cartitemId: number) {
     console.log("Response from confirmCart:", response.data);
     return {
       request: body,
-      response: response.data
+      response: {
+        username: response.data.username,
+        sessionid: response.data.sessionid,
+        status: response.data.status,
+        statusMessage: response.data.statusMessage,
+        severity: response.data.severity,
+      }
     };
   } catch (error) {
     console.error("Error during confirmCart:", error);
   }
-}
-
-export interface PaymentGatewayResponse {
-  request: {
-    sessionid: string;
-    request: any;
-    username: string;
-    failstatus: number;
-  };
-  response: any;
 }
 
 export async function getPaymentGateway(sessionId: string): Promise<PaymentGatewayResponse | undefined> {
@@ -343,7 +401,14 @@ export async function getPaymentGateway(sessionId: string): Promise<PaymentGatew
     console.log("Response from getPaymentGateway:", response.data);
     return {
       request: body,
-      response: response.data,
+      response: {
+        username: response.data.username,
+        sessionid: response.data.sessionid,
+        status: response.data.status,
+        statusMessage: response.data.statusMessage,
+        severity: response.data.severity,
+        redirecturl2: response.data.data.redirecturl2,
+      },
     };
   } catch (error) {
     console.error("Error during getPaymentGateway:", error);

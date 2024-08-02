@@ -37,7 +37,7 @@ const BookingForm = () => {
       if (result?.response.status === 0) {
         console.log(`response for ${BASE_URL}/getschedule:`, result?.response);
       } else {
-        setError(result?.response.error || 'Failed to fetch schedule');
+        setError('Failed to fetch schedule');
       }
     } catch (error) {
       console.error('Error fetching schedule:', error);
@@ -62,7 +62,7 @@ const BookingForm = () => {
       if (result?.response.status === 0) {
         console.log(`response for ${BASE_URL}/reservecartitem:`, result?.response);
 
-        const cartItemId = result.response?.data?.cartitemid;
+        const cartItemId = result.response?.cartitemid;
         if (cartItemId !== undefined) {
           dispatch(setCartItemId(cartItemId));
           router.push('/personalDetails');
@@ -70,7 +70,7 @@ const BookingForm = () => {
           setError('Cart item ID is missing');
         }
       } else {
-        setError(result?.response.error || 'Failed to reserve cart item');
+        setError('Failed to reserve cart item');
       }
     } catch (error) {
       console.error('Error reserving cart item:', error);
